@@ -16,7 +16,7 @@ import com.project.credits.service.InstallmentService;
 import com.project.credits.service.UserService;
 import com.project.credits.specification.CreditFiltersSpecification;
 import com.project.credits.util.DateUtil;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CreditServiceImpl implements CreditService {
 
     private static final long DAYS_IN_MONTH = 30L;
@@ -42,6 +41,14 @@ public class CreditServiceImpl implements CreditService {
     private final UserService userService;
     private final InstallmentService installmentService;
     private final CreditMapper creditMapper;
+
+    public CreditServiceImpl(CreditRepository creditRepository, @Lazy UserService userService,
+                             InstallmentService installmentService, CreditMapper creditMapper) {
+        this.creditRepository = creditRepository;
+        this.userService = userService;
+        this.installmentService = installmentService;
+        this.creditMapper = creditMapper;
+    }
 
     @Override
     public CreditResponse createCredit(CreateCreditRequest request) {
@@ -56,6 +63,30 @@ public class CreditServiceImpl implements CreditService {
 
         credit = creditRepository.save(credit);
         return creditMapper.toCreditResponse(credit);
+    }
+
+    @Override
+    public List<CreditResponse> findCreditsByUserId(Long userId) {
+        List<Credit> credits = creditRepository.findByUserId(userId);
+        return creditMapper.toCreditResponse(credits);
+    }
+
+    @Override
+    public CreditResponseWithPaging findCreditsByFilters(Long userId, CreditStatusEnum status, LocalDate date, Pageable pageable) {
+        LocalDateTime startOfDay = null;
+        LocalDateTime endOfDay = null;
+        if (date != null) {
+            startOfDay = date.atStartOfDay();
+            endOfDay = date.atTime(LocalTime.MAX);
+        }
+        Specification<Credit> spec = new CreditFiltersSpecification(userId, status, startOfDay, endOfDay);
+        Page<Credit> credits = creditRepository.findAll(spec, pageable);
+
+        CreditResponseWithPaging creditResponseWithPaging = new CreditResponseWithPaging();
+        creditResponseWithPaging.setCredits(creditMapper.toCreditResponse(credits.getContent()));
+        creditResponseWithPaging.setTotalElements(credits.getTotalElements());
+        creditResponseWithPaging.setTotalPages(credits.getTotalPages());
+        return creditResponseWithPaging;
     }
 
     private List<Installment> createInstallments(BigDecimal creditAmount, int installmentCount, Credit credit) {
@@ -75,37 +106,8 @@ public class CreditServiceImpl implements CreditService {
         return installments;
     }
 
-    @Override
-    public List<CreditResponse> getUserCredits(Long userId) {
-        User user = userService.findUserById(userId);
-        List<Credit> credits = creditRepository.findByUser(user);
-        return creditMapper.toCreditResponse(credits);
-    }
-
-    @Override
-    public CreditResponseWithPaging getUserCreditsWithFilter(Long userId, CreditStatusEnum status, LocalDate date, Pageable pageable) {
-        User user = userService.findUserById(userId);
-
-        LocalDateTime startOfDay = null;
-        LocalDateTime endOfDay = null;
-
-        if (date != null) {
-            startOfDay = date.atStartOfDay();
-            endOfDay = date.atTime(LocalTime.MAX);
-        }
-
-        Specification<Credit> spec = new CreditFiltersSpecification(user.getId(), status, startOfDay, endOfDay);
-        Page<Credit> credits = creditRepository.findAll(spec, pageable);
-
-        CreditResponseWithPaging creditResponseWithPaging = new CreditResponseWithPaging();
-        creditResponseWithPaging.setCredits(creditMapper.toCreditResponse(credits.getContent()));
-        creditResponseWithPaging.setTotalElements(credits.getTotalElements());
-        creditResponseWithPaging.setTotalPages(credits.getTotalPages());
-        return creditResponseWithPaging;
-    }
-
     @Transactional
-    @Scheduled(cron = "0 0 0 * * ?") // Every minute: 0 * * ? * *
+    @Scheduled(cron = "0 0 0 * * ?")
     public void calculateLateOverdueFees() {
         List<Installment> overdueInstallments = installmentService.findOverdueInstallments(LocalDate.now());
         for (Installment installment : overdueInstallments) {

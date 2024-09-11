@@ -26,24 +26,23 @@ public interface CreditService {
     CreditResponse createCredit(CreateCreditRequest request);
 
     /**
-     * Retrieves a list of all credits associated with a specific user.
+     * Retrieves a list of credits associated with the specified user ID.
      *
      * @param userId The ID of the user whose credits are to be retrieved. Cannot be null.
-     * @return A list of {@link CreditResponse} objects containing the details of all credits for the specified user.
-     * @throws EntityNotFoundException If the user with the specified ID is not found.
+     * @return A list of {@link CreditResponse} objects containing the details of the user's credits.
+     * @throws EntityNotFoundException If no credits are found for the specified user ID.
      */
-    List<CreditResponse> getUserCredits(Long userId);
+    List<CreditResponse> findCreditsByUserId(Long userId);
 
     /**
-     * Retrieves a paginated list of credits for a specific user with optional filters for credit status and creation date.
+     * Retrieves a paginated list of credits based on the specified filters.
      *
-     * @param userId   The ID of the user whose credits are to be retrieved. Cannot be null.
-     * @param status   An optional filter for the status of the credits (e.g., ACTIVE, CLOSED). If null, no filter is applied.
-     * @param date     An optional filter for the creation date of the credits. If null, no filter is applied.
-     * @param pageable Pagination details including the page number and page size.
-     * @return A {@link CreditResponseWithPaging} containing the filtered list of credits along with pagination information.
-     * @throws EntityNotFoundException If the user with the specified ID is not found.
+     * @param userId   The ID of the user whose credits are to be retrieved. Can be null to retrieve credits for all users.
+     * @param status   The status of the credits to be retrieved. Can be null to retrieve credits of all statuses.
+     * @param date     The specific date to filter credits. Can be null to retrieve credits for all dates.
+     * @param pageable The pagination information.
+     * @return A {@link CreditResponseWithPaging} object containing the paginated list of credits and pagination details.
      */
-    CreditResponseWithPaging getUserCreditsWithFilter(Long userId, CreditStatusEnum status, LocalDate date, Pageable pageable);
+    CreditResponseWithPaging findCreditsByFilters(Long userId, CreditStatusEnum status, LocalDate date, Pageable pageable);
 
 }

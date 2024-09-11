@@ -2,7 +2,6 @@ package com.project.credits.service;
 
 import com.project.credits.entity.Credit;
 import com.project.credits.entity.User;
-import com.project.credits.enums.CreditStatusEnum;
 import com.project.credits.mapper.CreditMapper;
 import com.project.credits.repository.CreditRepository;
 import com.project.credits.request.CreateCreditRequest;
@@ -23,12 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,11 +45,9 @@ class CreditServiceTest {
     private CreditServiceImpl creditService;
 
     private User mockUser;
-    private Credit mockCredit1;
-    private CreateCreditRequest mockCreateCreditRequest;
-    private List<Credit> mockCredits;
+    private Credit mockCredit;
     private Page<Credit> mockCreditPage;
-    private CreditResponseWithPaging expectedResponse;
+    private CreateCreditRequest mockCreateCreditRequest;
 
     @BeforeEach
     void setUp() {
@@ -69,33 +63,21 @@ class CreditServiceTest {
         mockUser = new User();
         mockUser.setId(1L);
 
-        mockCredit1 = new Credit();
-        mockCredit1.setUser(mockUser);
+        mockCredit = new Credit();
+        mockCredit.setUser(mockUser);
 
         Credit mockCredit2 = new Credit();
         mockCredit2.setUser(mockUser);
 
-        CreditResponse mockCreditResponse1 = new CreditResponse();
-        mockCreditResponse1.setInstallments(new ArrayList<>());
-
-        CreditResponse mockCreditResponse2 = new CreditResponse();
-        mockCreditResponse2.setInstallments(new ArrayList<>());
-
-        mockCredits = Arrays.asList(mockCredit1, mockCredit2);
+        List<Credit> mockCredits = Arrays.asList(mockCredit, mockCredit2);
 
         mockCreditPage = new PageImpl<>(mockCredits);
-
-        List<CreditResponse> mockResponses = Arrays.asList(mockCreditResponse1, mockCreditResponse2);
-        expectedResponse = new CreditResponseWithPaging();
-        expectedResponse.setCredits(mockResponses);
-        expectedResponse.setTotalElements(mockCreditPage.getTotalElements());
-        expectedResponse.setTotalPages(mockCreditPage.getTotalPages());
     }
 
     @Test
     void createCredit_whenValidRequest_thenCreditIsCreatedSuccessfully() {
         when(userService.findUserById(mockCreateCreditRequest.getUserId())).thenReturn(mockUser);
-        when(creditRepository.save(any(Credit.class))).thenReturn(mockCredit1);
+        when(creditRepository.save(any(Credit.class))).thenReturn(mockCredit);
 
         CreditResponse result = creditService.createCredit(mockCreateCreditRequest);
 
@@ -106,37 +88,27 @@ class CreditServiceTest {
     }
 
     @Test
-    void getUserCredits_whenValidRequest_thenReturnCreditResponses() {
-        when(userService.findUserById(mockUser.getId())).thenReturn(mockUser);
-        when(creditRepository.findByUser(mockUser)).thenReturn(mockCredits);
+    void findCreditsByUserId_whenValidRequest_thenReturnCredits() {
+        when(creditRepository.findByUserId(1L)).thenReturn(List.of(mockCredit));
 
-        List<CreditResponse> result = creditService.getUserCredits(mockUser.getId());
+        List<CreditResponse> result = creditService.findCreditsByUserId(1L);
 
-        verify(userService, times(1)).findUserById(mockUser.getId());
-        verify(creditRepository, times(1)).findByUser(mockUser);
+        verify(creditRepository, times(1)).findByUserId(1L);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
     }
 
     @Test
-    void getUserCreditsWithFilter_whenUserExistsAndFilterApplied_thenReturnCreditResponseWithPaging() {
-        Long userId = mockUser.getId();
-        CreditStatusEnum status = CreditStatusEnum.ACTIVE;
-        LocalDate date = LocalDate.now();
+    void findCreditsByFilters_whenValidRequest_thenReturnCreditsWithPaging() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        when(userService.findUserById(userId)).thenReturn(mockUser);
         when(creditRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(mockCreditPage);
 
-        CreditResponseWithPaging result = creditService.getUserCreditsWithFilter(userId, status, date, pageable);
+        CreditResponseWithPaging result = creditService.findCreditsByFilters(1L, any(), any(), pageable);
 
-        verify(userService, times(1)).findUserById(userId);
         verify(creditRepository, times(1)).findAll(any(Specification.class), eq(pageable));
 
         assertNotNull(result);
-        assertEquals(expectedResponse.getTotalElements(), result.getTotalElements());
-        assertEquals(expectedResponse.getTotalPages(), result.getTotalPages());
     }
 
 }

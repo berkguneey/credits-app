@@ -20,9 +20,11 @@ public class ExampleModels {
     public static final String CREATE_CREDIT_RESPONSE_EXAMPLE = "{\n" +
             "    \"id\": 1,\n" +
             "    \"principalAmount\": 100,\n" +
+            "    \"status\": \"ACTIVE\",\n" +
             "    \"installments\": [\n" +
             "        {\n" +
             "            \"id\": 1,\n" +
+            "            \"installmentId\": 1,\n" +
             "            \"amount\": 33.33,\n" +
             "            \"dueDate\": \"2024-10-07\",\n" +
             "            \"overdueDays\": 0,\n" +
@@ -31,6 +33,7 @@ public class ExampleModels {
             "        },\n" +
             "        {\n" +
             "            \"id\": 2,\n" +
+            "            \"installmentId\": 2,\n" +
             "            \"amount\": 33.33,\n" +
             "            \"dueDate\": \"2024-11-06\",\n" +
             "            \"overdueDays\": 0,\n" +
@@ -39,7 +42,8 @@ public class ExampleModels {
             "        },\n" +
             "        {\n" +
             "            \"id\": 3,\n" +
-            "            \"amount\": 66.67,\n" +
+            "            \"installmentId\": 3,\n" +
+            "            \"amount\": 33.34,\n" +
             "            \"dueDate\": \"2024-12-06\",\n" +
             "            \"overdueDays\": 0,\n" +
             "            \"overdueFeeAmount\": 0,\n" +
@@ -53,9 +57,11 @@ public class ExampleModels {
             "    {\n" +
             "        \"id\": 1,\n" +
             "        \"principalAmount\": 100.00,\n" +
+            "        \"status\": \"ACTIVE\",\n" +
             "        \"installments\": [\n" +
             "            {\n" +
             "                \"id\": 1,\n" +
+            "                \"installmentId\": 1,\n" +
             "                \"amount\": 33.33,\n" +
             "                \"dueDate\": \"2024-10-07\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -64,6 +70,7 @@ public class ExampleModels {
             "            },\n" +
             "            {\n" +
             "                \"id\": 2,\n" +
+            "                \"installmentId\": 2,\n" +
             "                \"amount\": 33.33,\n" +
             "                \"dueDate\": \"2024-11-06\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -72,6 +79,7 @@ public class ExampleModels {
             "            },\n" +
             "            {\n" +
             "                \"id\": 3,\n" +
+            "                \"installmentId\": 3,\n" +
             "                \"amount\": 33.34,\n" +
             "                \"dueDate\": \"2024-12-06\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -83,9 +91,11 @@ public class ExampleModels {
             "    {\n" +
             "        \"id\": 2,\n" +
             "        \"principalAmount\": 150.00,\n" +
+            "        \"status\": \"ACTIVE\",\n" +
             "        \"installments\": [\n" +
             "            {\n" +
             "                \"id\": 4,\n" +
+            "                \"installmentId\": 1,\n" +
             "                \"amount\": 37.50,\n" +
             "                \"dueDate\": \"2024-10-07\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -94,6 +104,7 @@ public class ExampleModels {
             "            },\n" +
             "            {\n" +
             "                \"id\": 5,\n" +
+            "                \"installmentId\": 2,\n" +
             "                \"amount\": 37.50,\n" +
             "                \"dueDate\": \"2024-11-06\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -102,6 +113,7 @@ public class ExampleModels {
             "            },\n" +
             "            {\n" +
             "                \"id\": 6,\n" +
+            "                \"installmentId\": 3,\n" +
             "                \"amount\": 37.50,\n" +
             "                \"dueDate\": \"2024-12-06\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -110,6 +122,7 @@ public class ExampleModels {
             "            },\n" +
             "            {\n" +
             "                \"id\": 7,\n" +
+            "                \"installmentId\": 4,\n" +
             "                \"amount\": 37.50,\n" +
             "                \"dueDate\": \"2025-01-06\",\n" +
             "                \"overdueDays\": 0,\n" +
@@ -126,9 +139,11 @@ public class ExampleModels {
             "        {\n" +
             "            \"id\": 1,\n" +
             "            \"principalAmount\": 250.00,\n" +
+            "            \"status\": \"ACTIVE\",\n" +
             "            \"installments\": [\n" +
             "                {\n" +
             "                    \"id\": 1,\n" +
+            "                    \"installmentId\": 1,\n" +
             "                    \"amount\": 62.50,\n" +
             "                    \"dueDate\": \"2024-10-07\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -137,6 +152,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 2,\n" +
+            "                    \"installmentId\": 2,\n" +
             "                    \"amount\": 62.50,\n" +
             "                    \"dueDate\": \"2024-11-06\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -145,6 +161,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 3,\n" +
+            "                    \"installmentId\": 3,\n" +
             "                    \"amount\": 62.50,\n" +
             "                    \"dueDate\": \"2024-12-06\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -153,6 +170,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 4,\n" +
+            "                    \"installmentId\": 4,\n" +
             "                    \"amount\": 62.50,\n" +
             "                    \"dueDate\": \"2025-01-06\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -164,9 +182,11 @@ public class ExampleModels {
             "        {\n" +
             "            \"id\": 2,\n" +
             "            \"principalAmount\": 150.00,\n" +
+            "            \"status\": \"ACTIVE\",\n" +
             "            \"installments\": [\n" +
             "                {\n" +
             "                    \"id\": 5,\n" +
+            "                    \"installmentId\": 1,\n" +
             "                    \"amount\": 37.50,\n" +
             "                    \"dueDate\": \"2024-10-07\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -175,6 +195,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 6,\n" +
+            "                    \"installmentId\": 2,\n" +
             "                    \"amount\": 37.50,\n" +
             "                    \"dueDate\": \"2024-11-06\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -183,6 +204,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 7,\n" +
+            "                    \"installmentId\": 3,\n" +
             "                    \"amount\": 37.50,\n" +
             "                    \"dueDate\": \"2024-12-06\",\n" +
             "                    \"overdueDays\": 0,\n" +
@@ -191,6 +213,7 @@ public class ExampleModels {
             "                },\n" +
             "                {\n" +
             "                    \"id\": 8,\n" +
+            "                    \"installmentId\": 4,\n" +
             "                    \"amount\": 37.50,\n" +
             "                    \"dueDate\": \"2025-01-06\",\n" +
             "                    \"overdueDays\": 0,\n" +

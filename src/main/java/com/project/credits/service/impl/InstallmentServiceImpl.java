@@ -11,7 +11,6 @@ import com.project.credits.exception.BusinessException;
 import com.project.credits.exception.EntityNotFoundException;
 import com.project.credits.repository.InstallmentRepository;
 import com.project.credits.service.InstallmentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +20,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class InstallmentServiceImpl implements InstallmentService {
 
     private final InstallmentRepository installmentRepository;
+
+    public InstallmentServiceImpl(InstallmentRepository installmentRepository) {
+        this.installmentRepository = installmentRepository;
+    }
 
     @Override
     public List<Installment> findOverdueInstallments(LocalDate date) {
